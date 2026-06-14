@@ -16,38 +16,50 @@
       }
       html,body{height:100%;}
       body{
-        margin:0; font-family: 'Share Tech Mono', monospace, system-ui; background: linear-gradient(180deg,#050507 0%, #0b0b0f 60%); color:#e6eef1; display:flex; align-items:center; justify-content:center;
+        margin:0; font-family: 'Share Tech Mono', monospace, system-ui; background: linear-gradient(180deg,#050507 0%, #0b0b0f 60%); color:#e6eef1; display:flex; align-items:center; justify-content:center; min-height:100vh;
       }
-      .wrap{width:100%; max-width:980px; height:85vh; display:flex; gap:20px; padding:24px; box-sizing:border-box}
+      .wrap{width:100%; max-width:1100px; height:85vh; display:flex; gap:20px; padding:24px; box-sizing:border-box}
 
       /* panel izquierdo: login */
-      #login{flex:0 0 320px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.03); padding:24px; border-radius:8px; box-shadow: 0 6px 30px rgba(0,0,0,0.6)}
+      #login{flex:0 0 320px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.03); padding:24px; border-radius:8px; box-shadow: 0 10px 30px rgba(0,0,0,0.6)}
       #login h1{margin:0 0 8px; color:var(--accent); font-size:28px; text-shadow:0 0 8px rgba(0,255,153,0.12)}
       #login p{margin:0 0 16px; color:var(--muted)}
-      #login input{width:100%; padding:10px; background:transparent; border:1px solid rgba(255,255,255,0.04); color:inherit; border-radius:6px}
-      #login button{margin-top:12px; width:100%; padding:10px; border:0; background:linear-gradient(90deg,#00ff99,#00d18a); color:#001; font-weight:700; border-radius:6px; cursor:pointer}
+      #login input{width:100%; padding:12px; background:transparent; border:1px solid rgba(255,255,255,0.04); color:inherit; border-radius:6px}
+      #login button{margin-top:12px; width:100%; padding:12px; border:0; background:linear-gradient(90deg,#00ff99,#00d18a); color:#001; font-weight:700; border-radius:6px; cursor:pointer}
 
       /* panel de chat */
-      #chat{flex:1; display:flex; flex-direction:column; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:8px; border:1px solid rgba(255,255,255,0.03); overflow:hidden}
+      #chat{flex:1; display:flex; flex-direction:column; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:8px; border:1px solid rgba(255,255,255,0.03); box-shadow: 0 10px 30px rgba(0,0,0,0.6); overflow:hidden}
       #title{margin:12px 18px; color:var(--accent); font-size:18px}
-      .chat-main{display:flex; flex-direction:column; flex:1; padding:12px}
-      #messages{flex:1; overflow:auto; padding:18px; display:flex; flex-direction:column; gap:12px}
+      .chat-top{display:flex; align-items:center; justify-content:space-between; padding:8px 16px; border-bottom:1px solid rgba(255,255,255,0.02);}
+      .chat-main{display:flex; flex:1; padding:12px; gap:12px}
+      #messages-wrap{flex:1; display:flex; flex-direction:column; background:transparent; border-radius:6px; overflow:hidden}
+      #messages{flex:1; overflow:auto; padding:18px; display:flex; flex-direction:column; gap:12px;}
 
-      .message{max-width:80%; padding:12px 14px; border-radius:10px; background:var(--bubble); box-shadow: 0 3px 10px rgba(0,0,0,0.6); color:#dffcf0}
+      .side{width:220px; background:rgba(0,0,0,0.03); border-radius:8px; padding:12px; box-sizing:border-box}
+      .users-list{display:flex; flex-direction:column; gap:10px; max-height:100%; overflow:auto}
+      .user{display:flex; align-items:center; gap:10px}
+      .avatar{width:36px; height:36px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-weight:700; color:#021; background:#fff; font-size:14px}
+
+      .message{max-width:80%; padding:12px 14px; border-radius:10px; background:var(--bubble); box-shadow: 0 3px 10px rgba(0,0,0,0.6); color:#dffcf0; animation:fadeInUp .18s ease}
       .message.other{align-self:flex-start; background:var(--bubble-alt); border:1px solid rgba(255,255,255,0.02)}
       .message.mine{align-self:flex-end; background:linear-gradient(90deg,#072617,#06311f); border:1px solid rgba(0,255,153,0.08)}
       .meta{display:block; font-size:11px; color:var(--muted); margin-bottom:6px}
       .system{align-self:center; font-size:13px; color:#9ea6a8; font-style:italic}
 
-      #input{display:flex; gap:10px; padding:12px}
+      #input{display:flex; gap:10px; padding:12px; border-top:1px solid rgba(255,255,255,0.02)}
       #input input{flex:1; padding:12px; background:transparent; border:1px solid rgba(255,255,255,0.03); color:inherit; border-radius:8px}
       #input button{padding:12px 16px; border-radius:8px; border:0; background:linear-gradient(90deg,#00ff99,#00d18a); color:#001; font-weight:700; cursor:pointer}
+
+      .typing{font-size:13px; color:var(--muted); padding:6px 14px}
 
       /* scrollbar */
       #messages::-webkit-scrollbar{width:10px}
       #messages::-webkit-scrollbar-thumb{background:linear-gradient(#071414,#0a2b21); border-radius:10px}
 
-      @media (max-width:700px){.wrap{flex-direction:column;height:100vh;padding:8px} #login{width:100%} #chat{width:100%}}
+      /* animations */
+      @keyframes fadeInUp{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
+
+      @media (max-width:900px){.wrap{flex-direction:column;height:100vh;padding:8px} #login{width:100%} #chat{width:100%} .chat-main{flex-direction:column} .side{width:100%; order:2}}
     </style>
   </head>
   <body>
@@ -61,13 +73,25 @@
       </div>
 
       <div id="chat" style="display:none">
-        <h2 id="title">DarkChat</h2>
+        <div class="chat-top">
+          <h2 id="title">DarkChat</h2>
+          <div id="users-count" style="color:var(--muted)"></div>
+        </div>
+
         <div class="chat-main">
-          <div id="messages" aria-live="polite"></div>
-          <div id="input">
-            <input id="msg" placeholder="Escribe un mensaje..." autocomplete="off" />
-            <button id="send">Enviar</button>
+          <div id="messages-wrap">
+            <div id="messages" aria-live="polite"></div>
+            <div id="input">
+              <input id="msg" placeholder="Escribe un mensaje..." autocomplete="off" />
+              <button id="send">Enviar</button>
+            </div>
+            <div id="typing" class="typing" aria-live="polite" style="display:none"></div>
           </div>
+
+          <aside class="side">
+            <strong style="color:var(--accent);">Usuarios</strong>
+            <div id="users" class="users-list" style="margin-top:8px"></div>
+          </aside>
         </div>
       </div>
     </div>
