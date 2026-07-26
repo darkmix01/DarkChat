@@ -25,6 +25,7 @@ let currentRoom = 'general';
 let typingUsers = new Set();
 let typingTimeout = null;
 let currentUser = null;
+let isConnecting = false;
 
 // ==================== ALERTAS ====================
 
@@ -34,6 +35,7 @@ class Alert {
     this.message = message;
     this.duration = duration;
     this.element = null;
+    this.timeoutId = null;
     this.create();
   }
 
@@ -50,7 +52,7 @@ class Alert {
     this.element.innerHTML = `
       <div class="alert-icon">${icons[this.type]}</div>
       <div class="alert-content">${this.message}</div>
-      <button class="alert-close" title="Cerrar">×</button>
+      <button class="alert-close" type="button" title="Cerrar">×</button>
     `;
 
     alertContainer.appendChild(this.element);
@@ -58,12 +60,13 @@ class Alert {
     this.element.querySelector('.alert-close').addEventListener('click', () => this.remove());
 
     if (this.duration > 0) {
-      setTimeout(() => this.remove(), this.duration);
+      this.timeoutId = setTimeout(() => this.remove(), this.duration);
     }
   }
 
   remove() {
     if (!this.element) return;
+    if (this.timeoutId) clearTimeout(this.timeoutId);
     this.element.classList.add('removing');
     setTimeout(() => {
       this.element?.remove();
@@ -192,28 +195,56 @@ function updateUsersList(room) {
 
 // ==================== EVENTOS DE LOGIN ====================
 
-enterBtn.addEventListener('click', () => {
+function validateAndJoin() {
   const name = nameInput.value.trim();
   const room = roomSelect.value;
 
+  // Validación del nombre
   if (!name) {
-    showAlert('warning', '⚡ Escribe tu nombre para entrar');
+    showAlert('warning', '👤 Escribe tu nombre para entrar');
     nameInput.focus();
-    return;
+    return false;
   }
 
   if (name.length < 1) {
-    showAlert('warning', '⚡ El nombre debe tener al menos 1 carácter');
-    return;
+    showAlert('warning', '👤 El nombre debe tener al menos 1 carácter');
+    nameInput.focus();
+    return false;
   }
 
+  if (name.length > 30) {
+    showAlert('warning', '👤 El nombre no puede superar 30 caracteres');
+    return false;
+  }
+
+  if (!/^[a-zA-Z0-9_-]+$/.test(name)) {
+    showAlert('warning', '👤 El nombre solo puede contener letras, números, guiones y guiones bajos');
+    nameInput.focus();
+    return false;
+  }
+
+  return true;
+}
+
+enterBtn.addEventListener('click', () => {
+  if (isConnecting) return;
+  
+  if (!validateAndJoin()) return;
+
+  const name = nameInput.value.trim();
+  const room = roomSelect.value;
+
+  isConnecting = true;
   enterBtn.disabled = true;
   enterBtn.textContent = 'Conectando...';
+  
   socket.emit('join', { name, room });
 });
 
 nameInput.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') enterBtn.click();
+  if (e.key === 'Enter' && !isConnecting) {
+    enterBtn.click();
+  }
 });
 
 // ==================== EVENTOS DE CHAT ====================
@@ -267,6 +298,7 @@ socket.on('system', (data) => {
   if (data.type === 'welcome') {
     currentUser = data.text.split(', ')[1]; // Obtener nombre del mensaje
     nameInput.value = '';
+    isConnecting = false;
     enterBtn.disabled = false;
     enterBtn.textContent = 'Entrar';
     loginContainer.style.display = 'none';
@@ -294,6 +326,7 @@ socket.on('message', (m) => {
 socket.on('error', (data) => {
   showAlert('error', `❌ ${data.message}`);
   if (data.message.includes('conectar') || data.message.includes('ingresar')) {
+    isConnecting = false;
     enterBtn.disabled = false;
     enterBtn.textContent = 'Entrar';
   }
@@ -349,6 +382,7 @@ socket.on('disconnect', () => {
   showAlert('error', '🔴 Desconectado del servidor', 0);
   loginContainer.style.display = 'flex';
   chatContainer.style.display = 'none';
+  isConnecting = false;
   enterBtn.disabled = false;
   enterBtn.textContent = 'Entrar';
   toggleSidebar(false);
@@ -357,6 +391,9 @@ socket.on('disconnect', () => {
 socket.on('connect_error', (error) => {
   console.error('Error de conexión:', error);
   showAlert('error', `⚠️ Error: ${error.message}`);
+  isConnecting = false;
+  enterBtn.disabled = false;
+  enterBtn.textContent = 'Entrar';
 });
 
 // Prevenir submit en mobile

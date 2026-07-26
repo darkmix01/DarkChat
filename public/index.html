@@ -48,39 +48,44 @@
         right: 20px;
         z-index: 10000;
         max-width: 400px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
       }
       
       .alert {
-        padding: 16px 20px;
-        margin-bottom: 12px;
+        padding: 14px 16px;
         border-radius: 8px;
         border-left: 4px solid;
-        background: rgba(0,0,0,0.6);
+        background: rgba(0,0,0,0.85);
         backdrop-filter: blur(10px);
         display: flex;
         align-items: center;
         gap: 12px;
         animation: slideIn 0.3s ease-out;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        font-size: 13px;
       }
       
       .alert-icon {
-        font-size: 20px;
+        font-size: 18px;
         flex-shrink: 0;
+        min-width: 20px;
       }
       
       .alert-content {
         flex: 1;
+        line-height: 1.3;
       }
       
       .alert-close {
         cursor: pointer;
-        font-size: 20px;
+        font-size: 18px;
         color: var(--muted);
         transition: color 0.2s;
         background: none;
         border: none;
-        padding: 0;
+        padding: 0 4px;
         flex-shrink: 0;
       }
       
@@ -233,7 +238,7 @@
       #login{
         background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
         border:1px solid rgba(255,255,255,0.03);
-        padding:32px 24px;
+        padding:28px 24px;
         border-radius:8px;
         box-shadow: 0 8px 32px rgba(0,0,0,0.1);
         width: 100%;
@@ -241,10 +246,11 @@
       }
       
       #login h1{
-        margin:0 0 8px 0;
+        margin:0 0 12px 0;
         color:var(--accent);
         font-size:28px;
         text-shadow:0 0 8px rgba(0,255,153,0.12);
+        line-height: 1.2;
       }
       
       #login p{
@@ -294,6 +300,11 @@
       
       #login button:active {
         transform: translateY(0);
+      }
+      
+      #login button:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
       }
       
       /* CHAT PANEL */
@@ -495,18 +506,37 @@
           display: block;
         }
         
+        #login-container {
+          padding: 16px;
+          align-items: flex-start;
+          padding-top: max(60px, env(safe-area-inset-top));
+        }
+        
         #login {
-          padding: 24px 16px;
+          padding: 20px;
           border-radius: 0;
           max-width: 100%;
         }
         
         #login h1 {
           font-size: 24px;
+          margin-bottom: 10px;
         }
         
         #login p {
           font-size: 11px;
+          margin-bottom: 14px;
+        }
+        
+        #login input, #login select {
+          padding: 11px;
+          font-size: 16px; /* Evita zoom en iOS */
+          margin-bottom: 10px;
+        }
+        
+        #login button {
+          padding: 11px;
+          font-size: 14px;
         }
         
         #title {
@@ -542,7 +572,7 @@
         
         #input input {
           padding: 10px;
-          font-size: 13px;
+          font-size: 16px;
         }
         
         #input button {
@@ -553,12 +583,12 @@
         .alert-container {
           right: 10px;
           left: 10px;
-          top: 10px;
+          top: calc(10px + env(safe-area-inset-top));
           max-width: none;
         }
         
         .alert {
-          padding: 12px 14px;
+          padding: 12px 12px;
           font-size: 12px;
         }
         
@@ -586,6 +616,11 @@
         #login {
           max-width: 380px;
           padding: 24px;
+        }
+        
+        #login h1 {
+          font-size: 26px;
+          margin-bottom: 10px;
         }
         
         #title {
@@ -665,7 +700,7 @@
         <div id="chat">
           <div id="title">
             <div id="title-left">
-              <button id="toggle-sidebar-btn" title="Salas y usuarios">☰</button>
+              <button id="toggle-sidebar-btn" title="Salas y usuarios">≡</button>
               <span>DarkChat - <strong id="current-room">general</strong></span>
             </div>
             <span id="users-count" style="font-size:12px; color:var(--muted)">👥 0</span>
