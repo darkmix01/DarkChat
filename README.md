@@ -1,60 +1,153 @@
-# 🌙 DarkChat v2.0 - Mejorado
+# 🌙 DarkChat v2.1 - Mejorado para Mobile
 
-Chat en tiempo real minimalista con diseño oscuro, **ahora con salas, historial persistente, validación de seguridad y más features**.
+Chat en tiempo real minimalista con diseño oscuro, **ahora con interfaz completamente responsiva para móviles y sistema de alertas mejorado**.
 
-## ✨ Características
+## ✨ Características Principales
 
-### v2.0 (Nuevas mejoras)
+### v2.1 (Mejoras Mobile & Alertas)
+- ✅ **Interfaz 100% responsiva** — Optimizada para móviles (320px+)
+- ✅ **Sidebar colapsable** — Ocultable en pantallas pequeñas
+- ✅ **Sistema de alertas mejorado** — Notificaciones elegantes con animaciones
+- ✅ **Mejor UX mobile** — Botones más grandes, textos legibles
+- ✅ **Viewport meta actualizado** — Comportamiento correcto en móviles
+- ✅ **Touch-friendly** — Espaciado óptimo para dedos
+
+### v2.0
 - ✅ **Base de datos SQLite** — Historial persistente de mensajes
 - ✅ **Múltiples salas** — general, tech, gaming, casual (extensibles)
-- ✅ **Validación XSS** — Sanitización de mensajes con librería `xss`
-- ✅ **Rate limiting** — Anti-spam: máx. 5 mensajes por minuto
-- ✅ **Lista de usuarios** — Ve quién está conectado en cada sala
+- ✅ **Validación XSS** — Sanitización de mensajes
+- ✅ **Rate limiting** — Anti-spam: máx. 5 mensajes/minuto
+- ✅ **Lista de usuarios** — Ve quién está conectado
 - ✅ **Indicador de escritura** — "X usuarios escribiendo..."
-- ✅ **Nombres únicos por sala** — No permiten duplicados
-- ✅ **Mejor UI** — Sidebar con salas y usuarios, diseño mejorado
-- ✅ **Configuración con .env** — Variables de entorno personalizables
+- ✅ **Nombres únicos** — No permiten duplicados por sala
 
-### v1.0 (Original)
+### v1.0
 - Chat en tiempo real vía Socket.IO
 - Entrada simple (solo nombre)
 - Diseño dark web minimalista
-- Sin almacenamiento
 
 ## 🛠️ Stack
 
 - **Backend:** Node.js + Express + Socket.IO
 - **Database:** SQLite3
-- **Frontend:** HTML + Vanilla JavaScript
-- **Seguridad:** xss (sanitización), validación de entrada, rate limiting
+- **Frontend:** HTML5 + Vanilla JavaScript + CSS3 (Responsive)
+- **Seguridad:** xss, validación, rate limiting
 
-## 📋 Requisitos
+## 📱 Responsividad
 
-- Node.js 18+ (LTS recomendado)
-- npm 9+
+| Dispositivo | Ancho | Comportamiento |
+|-------------|-------|----------------|
+| Móvil | <480px | Sidebar oculto (toggle), botones grandes, fuentes ajustadas |
+| Tablet | 481-900px | Sidebar más estrecho, layout flexible |
+| Desktop | >900px | Layout completo, sidebar visible |
 
-## 🚀 Instalación y Ejecución
-
-### 1. Clonar el repositorio
+## 🚀 Instalación Rápida
 
 ```bash
+# Clonar
 git clone https://github.com/darkmix01/DarkChat.git
 cd DarkChat
-```
 
-### 2. Instalar dependencias
-
-```bash
+# Instalar dependencias
 npm install
+
+# Configurar (opcional)
+cp .env.example .env
+
+# Ejecutar
+npm run dev    # Desarrollo con auto-reload
+npm start      # Producción
+
+# Abrir
+http://localhost:3000
 ```
 
-### 3. Configurar variables de entorno
+## 🎨 Sistema de Alertas
+
+Las alertas se muestran en la esquina superior derecha con animaciones suaves:
+
+```javascript
+showAlert(type, message, duration);
+// Tipos: 'error', 'success', 'warning', 'info'
+// Duración en ms (0 = permanente)
+
+Ejemplos:
+showAlert('success', '✅ Conectado', 3000);
+showAlert('error', '❌ Error de red', 0);
+showAlert('warning', '⚠️ Mensaje muy rápido', 5000);
+showAlert('info', 'ℹ️ Información', 4000);
+```
+
+## 📐 Estructura del Proyecto
+
+```
+DarkChat/
+├── server.js                 # Servidor principal
+├── package.json              # Dependencias
+├── .env.example              # Configuración
+├── .gitignore
+├── LICENSE
+├── README.md
+│
+├── src/
+│   ├── database.js          # SQLite
+│   ├── validation.js        # Validación de entrada
+│   └── rateLimit.js         # Rate limiting
+│
+├── public/
+│   ├── index.html           # UI (100% responsive)
+│   └── chat.js              # Lógica cliente + alertas
+│
+└── data/
+    └── chat.db              # Base de datos (generada)
+```
+
+## 🔐 Seguridad Implementada
+
+- ✅ Sanitización XSS (librería `xss`)
+- ✅ Validación de entrada
+- ✅ Rate limiting (5 msgs/min)
+- ✅ HTML escaping
+- ✅ Nombres únicos por sala
+- ✅ Validación en cliente y servidor
+
+**Para producción:**
+- Usar HTTPS/WSS
+- Autenticación (JWT)
+- CORS configurado
+- Firewall
+- Logs centralizados
+
+## 📡 API REST
 
 ```bash
-cp .env.example .env
+# Obtener salas
+GET /api/rooms
+
+# Obtener mensajes de una sala
+GET /api/messages/:roomId?limit=50
+
+# Obtener usuarios conectados
+GET /api/users/:roomId
 ```
 
-**Archivo `.env` (personalizable):**
+## 🎮 Socket.IO Eventos
+
+**Cliente → Servidor:**
+- `join: {name, room}` — Conectarse
+- `message: text` — Enviar mensaje
+- `typing` — Notificar escritura
+- `stop-typing` — Dejar de escribir
+
+**Servidor → Cliente:**
+- `system: {text, type}` — Mensajes del sistema
+- `message: {id, name, text, time}` — Nuevo mensaje
+- `history: [messages]` — Historial
+- `user-list: [users]` — Lista de usuarios
+- `user-typing: {user, id}` — Usuario escribiendo
+- `error: {message}` — Error
+
+## ⚙️ Variables de Entorno (.env)
 
 ```env
 PORT=3000
@@ -66,147 +159,41 @@ MAX_MESSAGE_LENGTH=500
 MAX_USERNAME_LENGTH=30
 ```
 
-### 4. Ejecutar
+## 🐛 Troubleshooting
 
-**Desarrollo (con auto-reload):**
-
+**"Error: Cannot find module 'sqlite3'"**
 ```bash
-npm run dev
+npm install sqlite3 --build-from-source
 ```
 
-**Producción:**
-
+**Puerto 3000 en uso:**
 ```bash
-npm start
+PORT=4000 npm start
 ```
 
-### 5. Abrir en navegador
-
-```
-http://localhost:3000
-```
-
-## 📁 Estructura del Proyecto
-
-```
-DarkChat/
-├── server.js              # Servidor principal + Socket.IO
-├── package.json           # Dependencias
-├── .env.example           # Variables de entorno (ejemplo)
-├── .gitignore             # Archivos ignorados
-├── LICENSE                # MIT License
-├── README.md              # Este archivo
-│
-├── src/
-│   ├── database.js        # Clase Database (SQLite)
-│   ├── validation.js      # Validación de entrada
-│   └── rateLimit.js       # Rate limiting
-│
-├── public/
-│   ├── index.html         # Cliente (UI mejorada)
-│   └── chat.js            # Lógica del cliente
-│
-└── data/
-    └── chat.db            # Base de datos (generada)
-```
-
-## 🔒 Seguridad
-
-### Implementado
-- **XSS Protection:** Sanitización de mensajes con `xss` package
-- **Input Validation:** Validación de username y mensaje
-- **Rate Limiting:** Máx. 5 mensajes/minuto por usuario
-- **HTML Escaping:** Escapado de caracteres peligrosos
-- **Unique Names:** Nombres únicos por sala
-
-### Recomendaciones para Producción
-- Usar HTTPS/WSS (certificado SSL)
-- Agregar autenticación (JWT, OAuth)
-- Configurar CORS según dominio permitido
-- Agregar logs centralizados
-- Usar reverse proxy (nginx)
-- Configurar firewall
-- Rate limiting más estricto en producción
-
-## 📊 API REST
-
-### GET `/api/rooms`
-
-Obtener todas las salas disponibles.
-
+**Base de datos corrupta:**
 ```bash
-curl http://localhost:3000/api/rooms
+rm data/chat.db
+npm start  # Se recreará
 ```
 
-### GET `/api/messages/:roomId`
+## 🚀 Futuras Mejoras
 
-Obtener últimos 50 mensajes de una sala (personalizable con `?limit=N`).
-
-```bash
-curl 'http://localhost:3000/api/messages/general?limit=100'
-```
-
-### GET `/api/users/:roomId`
-
-Obtener usuarios conectados en una sala.
-
-```bash
-curl http://localhost:3000/api/users/general
-```
-
-## 🔌 Socket.IO Eventos
-
-### Cliente → Servidor
-
-| Evento | Payload | Descripción |
-|--------|---------|-------------|
-| `join` | `{name, room}` | Conectarse a una sala |
-| `message` | `text` | Enviar mensaje |
-| `typing` | — | Notificar que está escribiendo |
-| `stop-typing` | — | Notificar que dejó de escribir |
-
-### Servidor → Cliente
-
-| Evento | Payload | Descripción |
-|--------|---------|-------------|
-| `system` | `{text, type}` | Mensaje del sistema |
-| `message` | `{id, name, text, time}` | Nuevo mensaje |
-| `history` | `[messages]` | Historial al conectar |
-| `user-list` | `[users]` | Lista de usuarios |
-| `user-typing` | `{user, id}` | Usuario escribiendo |
-| `user-stop-typing` | `{id}` | Usuario dejó de escribir |
-| `error` | `{message}` | Error (ej: nombre duplicado) |
-
-## 🎮 Uso
-
-1. **Abrir navegador** → `http://localhost:3000`
-2. **Ingresar nombre** (1-30 caracteres alfanuméricos)
-3. **Seleccionar sala** (general, tech, gaming, casual)
-4. **Clickear "Entrar"**
-5. **Ver historial** de la sala (últimos 50 mensajes)
-6. **Escribir mensajes** — Máx. 5 por minuto, máx. 500 caracteres
-7. **Ver usuarios conectados** en el sidebar derecho
-8. **Cambiar de sala** — Clickear sala en el sidebar izquierdo
-
-## 📝 Notas
-
-- **Base de datos:** Los mensajes se guardan en SQLite (`./data/chat.db`)
-- **Límite de salas:** Actualmente 4 predefinidas, extensible en `public/index.html`
-- **Persistencia:** Los mensajes se mantienen entre reinicios (SQLite)
-- **Sin autenticación:** Los usuarios son anónimos, identificados por nombre + socket ID
-
-## 🚧 Futuras Mejoras
-
-- [ ] Autenticación con JWT
+- [ ] Autenticación con JWT/OAuth
 - [ ] Mensajes privados 1-a-1
 - [ ] Reacciones con emoji
-- [ ] Editar/Eliminar mensajes
+- [ ] Editar/eliminar mensajes
 - [ ] Menciones (@usuario)
-- [ ] Archivos compartidos
-- [ ] Notificaciones del navegador
-- [ ] Dark/Light theme toggle
+- [ ] Compartir archivos
+- [ ] Notificaciones browser
 - [ ] Tests automatizados
-- [ ] Deploy a Heroku/Railway
+- [ ] Deploy (Heroku/Railway)
+
+## 📋 Requisitos
+
+- Node.js 18+
+- npm 9+
+- Navegador moderno (Chrome, Firefox, Safari, Edge)
 
 ## 📄 Licencia
 
@@ -214,4 +201,6 @@ MIT — Libre para usar, modificar y distribuir.
 
 ---
 
-**Hecho con ❤️ por darkmix01**
+**Desarrollado con ❤️ por darkmix01**
+
+[GitHub](https://github.com/darkmix01/DarkChat) • [Issues](https://github.com/darkmix01/DarkChat/issues)
